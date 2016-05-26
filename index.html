@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+  <script src='cookie.js'></script>
+</head>
+<body>
+	<form action="">
+  <input type="number" class='guests' />
+  <input type="number" class='rooms' />
+  <input type="submit" />
+</form>
+	<script>
+		(function() {
+'use strict';
+var
+  form = document.querySelector('form'),
+  guests = form.querySelector('.guests'),
+  rooms = form.querySelector('.rooms'),
+  // submit = form.querySelector('[type="submit"]'),
+  MAX_GUESTS_PER_ROOM = 3;
+
+guests.min = 1;
+guests.max = 6;
+guests.value = 2;
+
+function setRooms(roomsElement, guestsNumber) {
+  roomsElement.min = Math.ceil(guestsNumber / MAX_GUESTS_PER_ROOM);
+  roomsElement.max = guestsNumber;
+}
+
+guests.value = docCookies.getItem('guests');
+
+setRooms(rooms, guests.value);
+rooms.value = rooms.min;
+
+guests.onchange = function() {
+  setRooms(rooms, guests.value);
+  if (rooms.value !== rooms.min) {
+    rooms.value = rooms.min;
+  }
+};
+
+form.onsubmit = function(e) {
+  e.preventDefault();
+  var dateExpires = +Date.now() + 3 * 24 * 60 * 1000;
+  var dateToExpire = new Date(dateExpires).toUTCString();
+  document.cookie = 'guests=' + guests.value + ';ont=' + dateToExpire;
+  document.cookie = 'expires=' + dateToExpire;
+  form.submit();
+};
+
+})();
+	</script>
+</body>
+</html>
